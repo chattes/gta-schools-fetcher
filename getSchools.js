@@ -1,5 +1,13 @@
 const Axios = require("axios");
 const pThrottle = require("p-throttle");
+const AWS = require("aws-sdk");
+const fs = require("fs").promises;
+const path = require("path");
+const BUCKET_NAME = "chattes-gta-schools";
+AWS.config.update({ region: "us-east-2" });
+
+// Create S3 service object
+s3 = new AWS.S3({ apiVersion: "2006-03-01" });
 
 const start = async () => {
   console.log(process.env.args);
@@ -119,9 +127,31 @@ const start = async () => {
       let det = await throttled(school);
       allSchoolDetails.push(det);
     }
-    console.log("All Done...", allSchoolDetails);
+    await fs.writeFile(
+      path.join("allSchools.json"),
+      JSON.stringify(allSchoolDetails),
+      "utf-8"
+    );
+
+    console.log("File Saved");
+    console.log("Uploading file to S3...");
+
+    const fileContent = await fs.readFile(
+      path.join("allSchools.json"),
+      "utf-8"
+    );
+    const params = {
+      Bucket: BUCKET_NAME,
+      Key: "all-schools.json",
+      Body: fileContent,
+    };
+    s3.upload(params, function (err, data) {
+      console.log("An error occured uploading file to S3", err);
+      if (err) throw err;
+      console.log("All Done...");
+    });
   } catch (error) {
-    console.log("An error has occured");
+    console.log("An error has occured", error);
   }
 };
 
