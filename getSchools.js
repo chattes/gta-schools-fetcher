@@ -113,7 +113,7 @@ const start = async () => {
 
     const throttle = pThrottle({
       limit: 2,
-      interval: 8000,
+      interval: 15000,
     });
 
     const throttled = throttle(async (school) => {
