@@ -160,10 +160,26 @@ const start = async () => {
 const fetchDetails = async (school) => {
   console.log("Fetching Details...", school.id);
   const details_url = `https://www.scholarhood.ca${school.url}.json`;
-  let response = await Axios({
-    url: details_url,
-    method: "GET",
-  });
+  let response;
+  try {
+    response = await Axios({
+      url: details_url,
+      method: "GET",
+    });
+  } catch (error) {
+    console.log("An error has occured while fetching details for ", school.id);
+    response = {
+      data: {
+        address: "",
+        grades: "",
+        website: "",
+        phone_number: "",
+        city: "",
+        latitude: "",
+        longitude: "",
+      },
+    };
+  }
 
   let {
     address,
