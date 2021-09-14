@@ -123,7 +123,7 @@ const start = async () => {
 
     let allSchoolDetails = [];
 
-    for (let school of gtaSchools.splice(0, 4)) {
+    for (let school of gtaSchools) {
       let det = await throttled(school);
       allSchoolDetails.push(det);
     }
