@@ -146,8 +146,10 @@ const start = async () => {
       Body: fileContent,
     };
     s3.upload(params, function (err, data) {
-      console.log("An error occured uploading file to S3", err);
-      if (err) throw err;
+      if (err) {
+        console.log("An error occured uploading file to S3", err);
+        throw err;
+      }
       console.log("All Done...");
     });
   } catch (error) {
